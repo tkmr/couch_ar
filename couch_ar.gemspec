@@ -23,7 +23,14 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "couch_ar.gemspec",
      "lib/couch_ar.rb",
+     "lib/couch_ar/base.rb",
+     "lib/couch_ar/database.rb",
+     "lib/couch_ar/design.rb",
+     "lib/couch_ar/document.rb",
+     "lib/couch_ar/hide_format.rb",
+     "lib/couch_ar/view.rb",
      "spec/couch_ar_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb"
@@ -44,11 +51,14 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_runtime_dependency(%q<active_support>, [">= 0"])
     else
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_dependency(%q<active_support>, [">= 0"])
     end
   else
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
+    s.add_dependency(%q<active_support>, [">= 0"])
   end
 end
 
