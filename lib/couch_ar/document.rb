@@ -19,7 +19,14 @@ class CouchAr::Document < CouchAr::Base
       # options[:descending]   = true
       # options[:include_docs] = true
       options[:include_docs] = true
-      instantiate_collection all_doc_ids(options)['rows']
+      all_doc_ids(options)['rows'].map do |e|
+        if d = e['doc']
+          instantiate_record d
+        else
+          nil
+        end
+      end.compact
+      #instantiate_collection rows # .map{|e| e['doc'] }
     end
 
     def find_by_view(view, options = {})

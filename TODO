@@ -1,0 +1,6 @@
+- Arelと連携
+- Documentのclassで自動フィルタ (find_all)
+- Book.find(:all) => {type: 'book'}
+- validate support (more schema)
+- hash to object をreoccuring
+- nil check
