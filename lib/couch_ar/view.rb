@@ -1,24 +1,25 @@
+# -*- coding: utf-8 -*-
 class CouchAr::View
-  attr_accessor :map, :reduce, :name, :design_doc
+  attr_accessor :map, :reduce, :name
 
-  def initialize(name, designdoc, params)
-    self.design_doc = designdoc
+  def initialize(name, design_doc, params)
+    @design_doc = proc { design_doc } # serialize のため
+
+    if params.class == CouchAr::View
+      params = params.serializable_hash
+    end
+
     self.name   = name
     self.map    = params["map"]
     self.reduce = params["reduce"]
   end
 
+  def get(options = {})
+    @design_doc.call().get("_view/#{self.name}", options)
+  end
+
   def serializable_hash(options = {})
     {"map" => map, "reduce" => reduce}
-  end
-
-  def get(options = {})
-    p options[:key] = encode_key(options[:key]) if options[:key]
-    design_doc.get("_view/#{name}", options)
-  end
-
-  def encode_key(str)
-    ActiveSupport::JSON.encode(str)
   end
 end
 

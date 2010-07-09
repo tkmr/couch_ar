@@ -4,3 +4,5 @@
 - validate support (more schema)
 - hash to object をreoccuring
 - nil check
+
+- 常にinclude_docを止めて lazy load (_revsも)

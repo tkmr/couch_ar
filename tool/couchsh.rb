@@ -1,10 +1,5 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-
 require 'rubygems'
-require 'couch_ar'
-require 'spec'
-require 'spec/autorun'
+require File.join(File.dirname(__FILE__), '..', 'lib', 'couch_ar.rb')
 
 TEST_COUCHDB_NAME = 'test'
 TEST_COUCHDB_CONF = {
@@ -24,5 +19,3 @@ class MyDesign < CouchAr::Design
   database TestDB
 end
 
-Spec::Runner.configure do |config|
-end

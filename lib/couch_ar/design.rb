@@ -1,4 +1,6 @@
 class CouchAr::Design < CouchAr::Base
+  after_load :hash_to_views
+
   class << self
     attr_accessor :db
 
@@ -15,11 +17,27 @@ class CouchAr::Design < CouchAr::Base
     end
   end
 
-  def views
-    hash = {}
-    attributes["views"].each do |key, map_reduce|
-      hash[key] = CouchAr::View.new(key, self, map_reduce)
+  def hash_to_views
+    unless @attributes["views"]
+      @attributes["views"] = {}
+    else
+      @attributes["views"].each do |key, map_reduce|
+        @attributes["views"][key] = CouchAr::View.new(key, self, map_reduce)
+      end
     end
-    hash
+  end
+
+  def create
+    raise 'no name or id error'   unless self.name
+    self.id = "_design/#{self.name}"
+
+    raise 'this name or id exist' if self.exists?
+
+    default_attr = {
+      'language' => 'javascript',
+      'views' => { },
+    }
+    self.attributes = default_attr.merge(self.attributes)
+    self.update
   end
 end

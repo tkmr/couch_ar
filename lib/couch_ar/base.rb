@@ -1,50 +1,28 @@
 class CouchAr::Base < ActiveResource::Base
+  extend  ActiveModel::Callbacks
+  define_model_callbacks :validations, :create, :save, :load
+
+  extend  CouchAr::Route::ClassMethods
+  include CouchAr::Route::InstanceMethods
+
   self.logger = Logger.new(STDOUT)
   self.format = CouchAr::HideFormat
-
-  class << self
-    def custom_method_collection_url(method_name, options = {})
-      url_path_filter CouchAr::HideFormat.filter(super)
-    end
-
-    def element_path(id, prefix_options = {}, query_options = nil)
-      url_path_filter CouchAr::HideFormat.filter(super)
-    end
-
-    def new_element_path(prefix_options = {})
-      url_path_filter CouchAr::HideFormat.filter(super)
-    end
-
-    def collection_path(prefix_options = {}, query_options = nil)
-      url_path_filter CouchAr::HideFormat.filter(super)
-    end
-
-    def add_parameter(url, params)
-      base = (url =~ /\?/) ? (url + "&") : (url + "?")
-      base + params.map{|k, v| "#{k}=#{v}" }.join("&")
-    end
-
-    private
-    def url_path_filter(url)
-      get_rev_info? ? add_parameter(url, 'revs_info' => 'true') : url
-    end
-
-    def get_rev_info?
-      false # default false
-    end
-  end
-
-  def custom_method_element_url(method_name, options = {})
-    CouchAr::HideFormat.filter(super)
-  end
-
-  def custom_method_new_element_url(method_name, options = {})
-    CouchAr::HideFormat.filter(super)
-  end
 
   def destroy
     path = self.class.add_parameter(element_path, 'rev' => self.revision)
     connection.delete(path, self.class.headers)
+  end
+
+  def create
+    _run_create_callbacks { super }
+  end
+
+  def save
+    _run_save_callbacks { super }
+  end
+
+  def load(attributes)
+    _run_load_callbacks { super }
   end
 
   def encode(options={})

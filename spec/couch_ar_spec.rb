@@ -2,22 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "CouchAr" do
   before :all do
-    TestDB = CouchAr::Database.setup(TEST_COUCHDB_NAME, TEST_COUCHDB_CONF)
     @test_db = TestDB.open
-
-    class Book < CouchAr::Document
-      database TestDB
-    end
-
-    class MyDesign < CouchAr::Design
-      database TestDB
-    end
   end
 
   describe 'Database' do
     it 'can generate new class' do
-      TestDB = CouchAr::Database.setup(TEST_COUCHDB_NAME, TEST_COUCHDB_CONF)
-      TestDB.superclass.should == CouchAr::Database
+      TempTestDB = CouchAr::Database.setup(TEST_COUCHDB_NAME, TEST_COUCHDB_CONF)
+      TempTestDB.superclass.should == CouchAr::Database
     end
 
     it 'can get a db infomation' do
@@ -27,7 +18,7 @@ describe "CouchAr" do
   end
 
   describe 'Document' do
-    it 'provide CRUD operation to CouchDB' do
+    it 'provide CRUD operations to CouchDB' do
       aut = {
         "name" => 'tatsuya',
         "age"  => 29
@@ -48,5 +39,37 @@ describe "CouchAr" do
   end
 
   describe 'Design' do
+    it 'should provide to access some views' do
+      test_tag = "tag_#{rand}"
+
+      b = Book.new
+      b.name = 'The Computer book'
+      b.tags = ['cpu', 'hdd', 'tech', test_tag]
+      b.save!
+
+      javascript = <<EOT
+function(doc){
+  if(doc.tags){
+    for(var tag in doc.tags){
+      emit(doc.tags[tag], 1);
+    }
+  }
+}
+EOT
+      map_reduce = {'map' => javascript}
+
+      begin
+        test_design = MyDesign.find_by_name('testview')
+      rescue
+        test_design = MyDesign.new('name' => 'testview')
+      end
+
+      test_design.views['tags'] = CouchAr::View.new('tags', test_design, map_reduce)
+      test_design.save!
+
+      books = Book.find_by_view(test_design.views['tags'])
+      books[test_tag].size.should == 1
+      books[test_tag][0].id.should == b.id
+    end
   end
 end

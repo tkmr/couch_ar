@@ -2,6 +2,7 @@ require 'active_resource'
 require 'logger'
 
 module CouchAr
+  require 'couch_ar/route.rb'
   require 'couch_ar/hide_format.rb'
   require 'couch_ar/view.rb'
   require 'couch_ar/base.rb'

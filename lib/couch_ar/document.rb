@@ -65,4 +65,13 @@ class CouchAr::Document < CouchAr::Base
   def attachments
     self._attachments
   end
+
+  # url filter /////////////////////////////
+  def sub_urlpath_filter(url)
+    get_rev_info? ? add_parameter(url, 'revs_info' => 'true') : url
+  end
+
+  def get_rev_info?
+    true
+  end
 end
