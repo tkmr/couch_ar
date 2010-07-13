@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 class CouchAr::Document < CouchAr::Base
+  before_save :check_metadata
+
   class << self
     attr_accessor :db
 
@@ -36,7 +38,8 @@ class CouchAr::Document < CouchAr::Base
 
       docs = Hash.new {|h, k| h[k] = [] }
       rows.each do |row|
-        docs[row['key']] << instantiate_record(row['doc'])
+        d = instantiate_record(row['doc'])
+        docs[row['key']] << d if d
       end
       docs
     end
@@ -45,9 +48,21 @@ class CouchAr::Document < CouchAr::Base
       find_by_view(view, options).values.flatten
     end
 
+    def instantiate_record(record, prefix_options = {})
+      if record['type'] == self.name # get class name
+        super
+      else
+        nil
+      end
+    end
+
     def all_doc_ids(options = {})
       self.get('_all_docs_by_seq', options)
     end
+  end
+
+  def check_metadata
+    self.type = self.class.to_s unless self.respond_to?(:type)
   end
 
   def revision
