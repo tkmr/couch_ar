@@ -1,6 +1,10 @@
-- Documentのclassで自動フィルタ (find_all)
-- Book.find(:all) => {type: 'book'}
+- {type: 'blur'} から自動でクラス生成
+- CouchRestを見る
 
 - Arelと連携
 - 常にinclude_docを止めて lazy load (_revsも)
 - validate support (more schema)
+
+- more spec
+  - spec support (DBをdestroy => fixture? )
+  - Book.find(:all) => {type: 'book'} Documentのclassで自動フィルタ

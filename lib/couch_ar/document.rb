@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 class CouchAr::Document < CouchAr::Base
-  before_save :check_metadata
+  after_load :check_metadata
 
   class << self
     attr_accessor :db

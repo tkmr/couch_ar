@@ -26,14 +26,24 @@ class CouchAr::Base < ActiveResource::Base
   end
 
   def encode(options={})
-    CouchAr::HideFormat.encode(self.serializable_hash.merge(options))
+    CouchAr::HideFormat.encode(self.serializable_hash(options))
   end
 
-  class DummyResource < Hash
-    def initialize(hash)
-      hash = hash.dup
-      hash.each do |k, v|
-        self[k] = v
+  def serializable_hash(options={})
+    h = super
+    h.each do |k, v|
+      h[k] = v.serializable_hash(options) if v.respond_to?(:serializable_hash)
+    end
+    h.merge(options)
+  end
+
+  # for hash
+  class DummyResource
+    def self.new(hash)
+      if hash['type'] && self.class.const_defined?(hash['type'])
+        self.class.const_get(hash['type']).new(hash)
+      else
+        hash.dup
       end
     end
   end

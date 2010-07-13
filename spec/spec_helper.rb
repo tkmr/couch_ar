@@ -20,6 +20,10 @@ class Book < CouchAr::Document
   database TestDB
 end
 
+class Author < CouchAr::Document
+  database TestDB
+end
+
 class MyDesign < CouchAr::Design
   database TestDB
 end
