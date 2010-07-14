@@ -1,4 +1,4 @@
-module CouchAr::HideFormat
+module CouchAr::JsonFormat
   extend self
 
   def extension

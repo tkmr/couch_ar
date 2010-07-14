@@ -1,5 +1,5 @@
-- {type: 'blur'} から自動でクラス生成
 - CouchRestを見る
+  - specを真似する
 
 - Arelと連携
 - 常にinclude_docを止めて lazy load (_revsも)
@@ -8,3 +8,4 @@
 - more spec
   - spec support (DBをdestroy => fixture? )
   - Book.find(:all) => {type: 'book'} Documentのclassで自動フィルタ
+  - {type: 'blur'} から自動でクラス生成

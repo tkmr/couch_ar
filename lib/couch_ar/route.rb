@@ -22,7 +22,7 @@ module CouchAr::Route
     end
 
     def url_path_filter(url)
-      sub_urlpath_filter(CouchAr::HideFormat.filter(url))
+      sub_urlpath_filter(CouchAr::JsonFormat.filter(url))
     end
 
     def sub_urlpath_filter(url)

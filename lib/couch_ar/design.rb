@@ -9,7 +9,7 @@ class CouchAr::Design < CouchAr::Base
       self.site            = db.base_url
       self.element_name    = db.element_name
       self.collection_name = db.element_name
-      self.primary_key     = "_id"
+      self.primary_key     = CouchAr::KEYS[:id]
     end
 
     def find_by_name(name)

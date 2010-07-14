@@ -10,7 +10,7 @@ class CouchAr::Document < CouchAr::Base
       self.site         = db.base_url
       self.element_name = db.element_name
       self.collection_name = db.collection_name
-      self.primary_key  = '_id'
+      self.primary_key  = CouchAr::KEYS[:id]
     end
 
     # get id list -------------------------
@@ -49,7 +49,7 @@ class CouchAr::Document < CouchAr::Base
     end
 
     def instantiate_record(record, prefix_options = {})
-      if record['type'] == self.name # get class name
+      if record[CouchAr::KEYS[:type]] == self.name # get class name
         super
       else
         nil
@@ -62,11 +62,12 @@ class CouchAr::Document < CouchAr::Base
   end
 
   def check_metadata
-    self.type = self.class.to_s unless self.respond_to?(:type)
+    key = (CouchAr::KEYS[:type] + "=").to_sym
+    self.send(key, self.class.to_s) unless self.respond_to?(key)
   end
 
   def revision
-    self._rev
+    self.send(CouchAr::KEYS[:rev])
   end
 
   def revisions
