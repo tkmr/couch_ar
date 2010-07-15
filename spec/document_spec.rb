@@ -45,8 +45,6 @@ describe "CouchAr" do
         b.save!
 
         b2 = Book.find(b.id)
-        p b2
-
         b2.class.should == Book
         b2.name.should == b.name
         b2.author.name.should == 'tatsuya'

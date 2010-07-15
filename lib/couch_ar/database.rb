@@ -29,6 +29,14 @@ class CouchAr::Database < CouchAr::Base
     def open
       self.find(:one, :from => "/#{element_name}")
     end
+
+    def exists?
+      super("") # HEAD http://example.com/dbname/
+    end
+
+    def create
+      connection.put(element_path("")) # PUT http://example.com/dbname/
+    end
   end
 
   schema do

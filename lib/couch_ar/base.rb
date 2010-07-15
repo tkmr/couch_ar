@@ -10,8 +10,12 @@ class CouchAr::Base < ActiveResource::Base
 
   def destroy
     _run_destroy_callbacks {
-      path = self.class.add_parameter(element_path, 'rev' => self.revision)
-      connection.delete(path, self.class.headers)
+      if self.respond_to? :revision
+        path = self.class.add_parameter(element_path, 'rev' => self.revision)
+        connection.delete(path, self.class.headers)
+      else
+        super
+      end
     }
   end
 
