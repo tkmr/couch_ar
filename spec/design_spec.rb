@@ -14,29 +14,46 @@ describe "CouchAr" do
       b.tags = ['cpu', 'hdd', 'tech', test_tag]
       b.save!
 
-      javascript = <<EOT
-function(doc){
-  if(doc.tags){
-    for(var tag in doc.tags){
-      emit(doc.tags[tag], 1);
-    }
-  }
-}
-EOT
-      map_reduce = {'map' => javascript}
-
       begin
-        test_design = MyDesign.find_by_name('testview')
+        test_design = TestDesign.find_by_name('testview')
       rescue
-        test_design = MyDesign.new('name' => 'testview')
+        test_design = TestDesign.new('name' => 'testview')
       end
 
-      test_design.views['tags'] = CouchAr::View.new('tags', test_design, map_reduce)
+      test_design.add_view('tags') do
+        map <<-EOT
+          function(doc){
+            if(doc.tags){
+              for(var tag in doc.tags){
+                emit(doc.tags[tag], 1);
+              }
+            }
+          }
+        EOT
+
+        reduce <<-EOT
+          function(keys, values) {
+            var hash = {};
+            for(var k in keys){
+              if (hash[keys[k][0]])
+                hash[keys[k][0]] += values[k];
+              else
+                hash[keys[k][0]] =  values[k];
+            }
+            return hash;
+          }
+        EOT
+      end
+
       test_design.save!
 
       books = Book.find_by_view(test_design.views['tags'])
       books[test_tag].size.should == 1
       books[test_tag][0].id.should == b.id
+
+      res = test_design.views['tags'].get
+      res = res['rows'][0]['value']
+      res['tech'].should == 1
     end
   end
 end

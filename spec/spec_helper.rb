@@ -18,6 +18,7 @@ unless defined?(TEST_COUCHDB_NAME)
   TestDB = CouchAr::Database.setup(TEST_COUCHDB_NAME, TEST_COUCHDB_CONF)
 end
 
+
 class Book < CouchAr::Document
   database TestDB
 end
@@ -26,9 +27,10 @@ class Author < CouchAr::Document
   database TestDB
 end
 
-class MyDesign < CouchAr::Design
+class TestDesign < CouchAr::Design
   database TestDB
 end
+
 
 def reset_test_db!
   if TestDB.exists?

@@ -1,11 +1,15 @@
-- CouchRestを見る
-  - specを真似する
-
 - Arelと連携
-- 常にinclude_docを止めて lazy load (_revsも)
-- validate support (more schema)
+  - 常にinclude_docを止めて lazy load (_revsも)
 
-- more spec
-  - spec support (DBをdestroy => fixture? )
+- View.get_docs で {type:Book} を BookクラスへPrepare
+- automigrate view
+
+<< todo >>
+  - CouchAr::Response クラスを作る
+  - validate support (more schema)
+
+<< spec >>
+  - fixture? をサポート
   - Book.find(:all) => {type: 'book'} Documentのclassで自動フィルタ
   - {type: 'blur'} から自動でクラス生成
+

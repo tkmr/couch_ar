@@ -30,8 +30,9 @@ class CouchAr::Database < CouchAr::Base
       self.find(:one, :from => "/#{element_name}")
     end
 
-    def exists?
-      super("") # HEAD http://example.com/dbname/
+    def exists?(id = nil, options = {})
+      id ||= "" # HEAD http://example.com/dbname/
+      super(id, options)
     end
 
     def create

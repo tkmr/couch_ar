@@ -1,3 +1,11 @@
+# inner class for define map & reduce
+class CouchAr::TempTemplate
+  def initialize;  @attr = {};            end
+  def map(str);    @attr['map']    = str; end
+  def reduce(str); @attr['reduce'] = str; end
+  def to_hash;     @attr;                 end
+end
+
 class CouchAr::Design < CouchAr::Base
   after_load :hash_to_views
 
@@ -25,6 +33,13 @@ class CouchAr::Design < CouchAr::Base
         @attributes["views"][key] = CouchAr::View.new(key, self, map_reduce)
       end
     end
+  end
+
+  def add_view(name, &block)
+    mr = CouchAr::TempTemplate.new
+    mr.instance_eval(&block)
+
+    views[name] = CouchAr::View.new(name, self, mr.to_hash)
   end
 
   def create

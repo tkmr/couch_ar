@@ -34,6 +34,7 @@ class CouchAr::Document < CouchAr::Base
     def find_by_view(view, options = {})
       # options[:key] = "test"
       options[:include_docs] = true
+      options[:reduce] = false
       rows = view.get(options)['rows']
 
       docs = Hash.new {|h, k| h[k] = [] }
